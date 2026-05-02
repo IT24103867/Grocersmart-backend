@@ -5,6 +5,19 @@ const { protect, restrictTo } = require('../middleware/authMiddleware');
 const router = express.Router();
 
 router.use(protect);
+
+// Allow anyone to get their own user info or update themselves
+// But restrict everything else to ADMIN
+router.route('/:id')
+    .get((req, res, next) => {
+        if (req.user.role === 'ADMIN' || req.user._id.toString() === req.params.id) return next();
+        res.status(403).json({ status: 'fail', message: 'Unauthorized' });
+    }, userController.getUser)
+    .put((req, res, next) => {
+        if (req.user.role === 'ADMIN' || req.user._id.toString() === req.params.id) return next();
+        res.status(403).json({ status: 'fail', message: 'Unauthorized' });
+    }, userController.updateUser);
+
 router.use(restrictTo('ADMIN'));
 
 router.route('/')
@@ -12,8 +25,6 @@ router.route('/')
     .post(userController.createUser);
 
 router.route('/:id')
-    .get(userController.getUser)
-    .put(userController.updateUser)
     .delete(userController.deleteUser);
 
 router.patch('/:id/activate', userController.activateUser);
