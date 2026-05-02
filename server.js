@@ -23,6 +23,10 @@ const supplierRoutes = require('./routes/supplierRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const trashRoutes = require('./routes/trashRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
+const expenseRoutes = require('./routes/expenseRoutes');
+
+
 const globalErrorHandler = require('./middleware/errorMiddleware');
 
 app.use('/api/auth', authRoutes);
@@ -39,6 +43,10 @@ app.use('/api/cheques', chequeRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/trash', trashRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/expenses', expenseRoutes);
+
+
 
 
 
