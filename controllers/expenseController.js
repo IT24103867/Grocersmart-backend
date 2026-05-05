@@ -12,7 +12,46 @@ exports.getExpenses = async (req, res, next) => {
 
 exports.createExpense = async (req, res, next) => {
     try {
-        const expense = await Expense.create(req.body);
+        const { title, amount, category, date, note } = req.body;
+
+        // Validate required fields (note is optional)
+        const missingFields = [];
+        if (!title) missingFields.push('title');
+        if (amount === undefined || amount === null) missingFields.push('amount');
+        if (!category) missingFields.push('category');
+        if (!date) missingFields.push('date');
+
+        if (missingFields.length > 0) {
+            return res.status(400).json(
+                apiResponse.error(`Missing required fields: ${missingFields.join(', ')}`)
+            );
+        }
+
+        // Validate amount is greater than 0
+        const parsedAmount = parseFloat(amount);
+        if (isNaN(parsedAmount) || parsedAmount <= 0) {
+            return res.status(400).json(
+                apiResponse.error('Amount must be a valid number greater than 0')
+            );
+        }
+
+        // Validate date is not in the future
+        const expenseDate = new Date(date);
+        const now = new Date();
+        if (expenseDate > now) {
+            return res.status(400).json(
+                apiResponse.error('Date and time cannot be in the future')
+            );
+        }
+
+        const expense = await Expense.create({
+            title: title.trim(),
+            amount: parsedAmount,
+            category,
+            date: expenseDate,
+            note: note ? note.trim() : undefined
+        });
+        
         res.status(201).json(apiResponse.success(expense, 'Expense recorded successfully'));
     } catch (err) {
         next(err);
