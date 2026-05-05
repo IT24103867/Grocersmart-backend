@@ -54,6 +54,14 @@ const chequeSchema = new mongoose.Schema({
     customerId: {
         type: String
     },
+    // Link to supplier (for Outgoing cheques)
+    supplier: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Supplier'
+    },
+    supplierId: {
+        type: String
+    },
     note: {
         type: String,
         maxlength: [500, 'Note cannot exceed 500 characters']

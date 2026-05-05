@@ -47,8 +47,19 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/expenses', expenseRoutes);
 
 
+app.get('/', (req, res) => {
+    res.status(200).json({
+        status: 'success',
+        message: 'Welcome to GrocerSmart API! The backend server is running.'
+    });
+});
 
-
+app.get('/api', (req, res) => {
+    res.status(200).json({
+        status: 'success',
+        message: 'GrocerSmart API endpoint is active. Please use specific routes.'
+    });
+});
 
 // Handling undefined routes
 app.use((req, res, next) => {
