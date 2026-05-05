@@ -9,16 +9,22 @@ const expenseSchema = new mongoose.Schema({
     amount: { 
         type: Number, 
         required: [true, 'Amount is required'],
-        min: [0, 'Amount cannot be negative']
+        min: [0.01, 'Amount must be greater than 0']
     },
     category: { 
         type: String, 
         enum: ['Rent', 'Salaries', 'Utilities', 'Inventory Loss', 'Marketing', 'Maintenance', 'Other'],
-        default: 'Other'
+        required: [true, 'Category is required']
     },
     date: { 
         type: Date, 
-        default: Date.now 
+        required: [true, 'Date is required'],
+        validate: {
+            validator: function(value) {
+                return value <= new Date();
+            },
+            message: 'Date and time cannot be in the future'
+        }
     },
     note: {
         type: String,
